@@ -15,7 +15,8 @@ namespace PersonAvailabilityCalculator
         public static void Main(string[] args)
         {
             const string textFiles = @".\textFiles";
-            ReadDataIn(textFiles);
+            List<PersonAvailability> peopleAvailabilities = ReadDataIn(textFiles);
+            Console.WriteLine(peopleAvailabilities[0].Name);
         }
 
         static (DateTime start, DateTime end) EncodeDateTime(string line)
@@ -39,8 +40,9 @@ namespace PersonAvailabilityCalculator
         }
 
 
-        static void ReadDataIn(string folderPath)
+        static List<PersonAvailability> ReadDataIn(string folderPath)
         {
+            List<PersonAvailability> peopleAvailabilities = new List<PersonAvailability>();
             string[] fileNames = Directory.GetFiles(folderPath);
             foreach (string fileName in fileNames)
             {
@@ -59,8 +61,10 @@ namespace PersonAvailabilityCalculator
                     }
 
                     var personAvailability = new PersonAvailability(name, listOfDates);
+                    peopleAvailabilities.Add(personAvailability);
                 }
             }
+            return peopleAvailabilities;
         }
 
         static void ProcessData()
