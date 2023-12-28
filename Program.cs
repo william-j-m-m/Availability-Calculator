@@ -12,19 +12,20 @@ public abstract class Program
     {
         const string textFiles = @".\textFiles";
         var delta = new TimeSpan(1, 0, 0);
-        
+
         (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) = ReadDataIn(textFiles);
-        // Console.WriteLine(peopleAvailabilities[0].Name);
+
         Console.WriteLine('\n');
         Console.WriteLine(earliest);
         Console.WriteLine(latest);
-        ProcessData(peopleAvailabilities, delta, earliest, latest);
+        Console.WriteLine('\n');
+
+        const int minNumOfPeeps = 2;
+        ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps);
     }
 
     private static (DateTime start, DateTime end) EncodeDateTime(string line)
     {
-        // (DateTime start, DateTime end) output = (DateTime.Now, DateTime.Now);
-
         string[] splitLine = line.Split(",");
 
         string[] splitDate = splitLine[0].Split("/");
@@ -42,11 +43,12 @@ public abstract class Program
     }
 
 
-    private static (List<PersonAvailability> availability, DateTime earliest, DateTime latest) ReadDataIn(string folderPath)
+    private static (List<PersonAvailability> availability, DateTime earliest, DateTime latest) ReadDataIn(
+        string folderPath)
     {
         var earliest = DateTime.MaxValue;
         var latest = DateTime.MinValue;
-        
+
         var peopleAvailabilities = new List<PersonAvailability>();
         string[] fileNames = Directory.GetFiles(folderPath);
         foreach (string fileName in fileNames)
@@ -82,11 +84,12 @@ public abstract class Program
         return (peopleAvailabilities, earliest, latest);
     }
 
-    private static void ProcessData(List<PersonAvailability> peopleAvailabilities, TimeSpan delta, DateTime earliest, DateTime latest)
+    private static void ProcessData(List<PersonAvailability> peopleAvailabilities, TimeSpan delta, DateTime earliest,
+        DateTime latest, int minNumOfPeeps)
     {
         for (DateTime currentInterval = earliest; currentInterval <= latest; currentInterval += delta)
         {
-            int numPeopleStreak = 0;
+            var numPeopleStreak = 0;
             foreach (PersonAvailability person in peopleAvailabilities)
             {
                 foreach ((DateTime start, DateTime end) availableInterval in person.Availability)
@@ -98,12 +101,10 @@ public abstract class Program
                 }
             }
 
-            if (numPeopleStreak >= 2)
+            if (numPeopleStreak >= minNumOfPeeps)
             {
                 Console.WriteLine(currentInterval);
-                
             }
-            
         }
     }
 }
