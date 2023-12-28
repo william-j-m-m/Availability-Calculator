@@ -7,13 +7,15 @@
     string[] splitLine = line.Split(",");
 
     string[] splitDate = splitLine[0].Split("/");
+    
 
     string[] startTime = splitLine[1].Split(':');
     string[] endTime = splitLine[2].Split(':');
     
-    DateTime startDateTime = new(int.Parse(splitDate[2]), int.Parse(splitDate[1]), int.Parse(splitDate[0]), int.Parse(startTime[0]), int.Parse(startTime[1]), 0);
-    DateTime endDateTime = new(int.Parse(splitDate[2]), int.Parse(splitDate[1]), int.Parse(splitDate[0]), int.Parse(endTime[0]), int.Parse(endTime[1]), 0);
+    DateTime startDateTime = new(int.Parse(splitDate[2] ) + 2000, int.Parse(splitDate[1]), int.Parse(splitDate[0]), int.Parse(startTime[0]), int.Parse(startTime[1]), 0);
+    DateTime endDateTime = new(int.Parse(splitDate[2]) + 2000, int.Parse(splitDate[1]), int.Parse(splitDate[0]), int.Parse(endTime[0]), int.Parse(endTime[1]), 0);
 
+    Console.WriteLine(startDateTime);
     return (startDateTime, endDateTime);
 }
 
@@ -29,7 +31,7 @@ void ReadDataIn(string folderPath)
             string line = "";
             while ((line = reader.ReadLine()) != null)
             {
-                Console.WriteLine(line);
+                //Console.WriteLine(line);
                 (DateTime Start, DateTime End) dates = EncodeDateTime(line);
                 
             }
