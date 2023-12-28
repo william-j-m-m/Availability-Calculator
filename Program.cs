@@ -3,11 +3,15 @@
 void ReadDataIn(string folderPath)
 {
     string[] fileNames = Directory.GetFiles(folderPath);
-    foreach (string fileName in fileNames) {
-        using (StreamReader reader = new StreamReader(fileName))
+    foreach (string fileName in fileNames)
+    {
+        using (var reader = new StreamReader(fileName))
         {
+            Console.WriteLine($"Reading data for person {fileName.Split(@"\")[^1]}");
+
             string line = "";
-            while ((line = reader.ReadLine()) != null) {
+            while ((line = reader.ReadLine()) != null)
+            {
                 Console.WriteLine(line);
             }
         }
@@ -16,7 +20,6 @@ void ReadDataIn(string folderPath)
 
 void ProcessData()
 {
-    
 }
 
 
