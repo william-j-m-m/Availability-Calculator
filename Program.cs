@@ -65,6 +65,10 @@ public abstract class Program
         foreach ((DateTime start, DateTime end) streak in validStreaks)
         {
             Console.WriteLine($"{streak.start} -> {streak.end}");
+            for (DateTime interval = streak.start; interval <= streak.end; interval += delta)
+            {
+                Console.WriteLine($"\t| {interval.ToString(@"HH:mm")}");
+            }
         }
 
         Console.WriteLine($"\nTime to run: {(DateTime.Now - start).TotalMilliseconds} ms");
