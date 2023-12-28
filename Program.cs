@@ -242,12 +242,18 @@ public abstract class Program
         var numPeopleStreak = 0;
         foreach (PersonAvailability person in peopleAvailabilities)
         {
+            bool isAvailable = false;
             foreach ((DateTime start, DateTime end) availableInterval in person.Availability)
             {
                 if (currentInterval >= availableInterval.start && currentInterval <= availableInterval.end)
                 {
                     numPeopleStreak++;
+                    isAvailable = true;
                 }
+            }
+            if (requiredPeople.Contains(person.Name) && !isAvailable)
+            {
+                return false;
             }
         }
 
@@ -267,29 +273,28 @@ public abstract class Program
             return false;
         }
 
-        foreach (string requiredPerson in requiredPeople)
-        {
-            for (int numPeople = 0; numPeople < peopleAvailabilities.Count; numPeople++)
-            {
-                if (requiredPerson == peopleAvailabilities[numPeople].Name)
-                {
-                    bool meetsCriteria = false;
-                    foreach ((DateTime start, DateTime end) interval in
-                             peopleAvailabilities[numPeople].Availability)
-                    {
-                        if (currentInterval >= interval.start && currentInterval <= interval.end)
-                        {
-                            meetsCriteria = true;
-                        }
-                    }
-
-                    if (!meetsCriteria)
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
+        // foreach (string requiredPerson in requiredPeople)
+        // {
+        //     for (int numPeople = 0; numPeople < peopleAvailabilities.Count; numPeople++)
+        //     {
+        //         if (requiredPerson == peopleAvailabilities[numPeople].Name)
+        //         {
+        //             bool meetsCriteria = false;
+        //             foreach ((DateTime start, DateTime end) interval in peopleAvailabilities[numPeople].Availability)
+        //             {
+        //                 if (currentInterval >= interval.start && currentInterval <= interval.end)
+        //                 {
+        //                     meetsCriteria = true;
+        //                 }
+        //             }
+        //
+        //             if (!meetsCriteria)
+        //             {
+        //                 return false;
+        //             }
+        //         }
+        //     }
+        // }
 
         return true;
     }
