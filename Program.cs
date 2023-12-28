@@ -21,13 +21,16 @@ public abstract class Program
         Console.WriteLine(latest);
         Console.Write('\n');
 
-        const int minNumOfPeeps = 3;
+        Console.Write("Enter number of people you want at any one time: ");
+        int minNumOfPeeps = 2;
+        // minNumOfPeeps = int.Parse(Console.ReadLine());
+        
         List<(DateTime start, DateTime end)> validStreaks =
             ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps);
         Console.Write('\n');
         foreach (var n in validStreaks)
         {
-            Console.WriteLine($"{n.start} -> {n.end.TimeOfDay}");
+            Console.WriteLine($"{n.start} -> {n.end}");
         }
 
         Console.WriteLine($"Time to run: {(DateTime.Now - start).TotalMilliseconds} ms");
@@ -35,19 +38,22 @@ public abstract class Program
 
     private static (DateTime start, DateTime end) EncodeDateTime(string line)
     {
+        // (DateTime start, DateTime end) output = (DateTime.Now, DateTime.Now);
+
         string[] splitLine = line.Split(",");
 
-        string[] splitDate = splitLine[0].Split("/");
+        string[] splitStartDate = splitLine[0].Split("/");
+        string[] splitEndDate = splitLine[2].Split("/");
 
         string[] startTime = splitLine[1].Split(':');
-        string[] endTime = splitLine[2].Split(':');
+        string[] endTime = splitLine[3].Split(':');
 
-        DateTime startDateTime = new(int.Parse(splitDate[2]) + 2000, int.Parse(splitDate[1]),
-            int.Parse(splitDate[0]), int.Parse(startTime[0]), int.Parse(startTime[1]), 0);
-        DateTime endDateTime = new(int.Parse(splitDate[2]) + 2000, int.Parse(splitDate[1]), int.Parse(splitDate[0]),
+        DateTime startDateTime = new(int.Parse(splitStartDate[2]) + 2000, int.Parse(splitStartDate[1]),
+            int.Parse(splitStartDate[0]), int.Parse(startTime[0]), int.Parse(startTime[1]), 0);
+        DateTime endDateTime = new(int.Parse(splitEndDate[2]) + 2000, int.Parse(splitEndDate[1]), int.Parse(splitEndDate[0]),
             int.Parse(endTime[0]), int.Parse(endTime[1]), 0);
 
-        Console.WriteLine($"{startDateTime} -> {endDateTime.TimeOfDay}");
+        Console.WriteLine($"{startDateTime} -> {endDateTime}");
         return (startDateTime, endDateTime);
     }
 
@@ -134,6 +140,7 @@ public abstract class Program
                 }
 
                 Console.WriteLine(currentInterval);
+                
             }
             else if (onStreak)
             {
@@ -143,6 +150,7 @@ public abstract class Program
                 validStreaks.Add((streakStart, streakEnd));
                 Console.WriteLine(" ==== ENDING STREAK ==== ");
             }
+            
         }
 
         return validStreaks;
