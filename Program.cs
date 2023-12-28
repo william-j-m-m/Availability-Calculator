@@ -1,4 +1,6 @@
-﻿namespace PersonAvailabilityCalculator;
+﻿#define manual
+
+namespace PersonAvailabilityCalculator;
 
 public abstract class Program
 {
@@ -19,47 +21,90 @@ public abstract class Program
             new DateTime(new DateOnly(), new TimeOnly(23, 0))
         );
 
-        (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) = ReadDataIn(textFiles, delta);
+        (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) =
+            ReadDataIn(textFiles, delta);
 
         // Console.Write('\n');
         // Console.WriteLine(earliest);
         // Console.WriteLine(latest);
         // Console.Write('\n');
 
-        const bool manual = false;
+        // const bool manual = true;
+
 
         Console.Write("Enter number of people you want at any one time: ");
 
-        var minNumOfPeeps = 2;
-        if (manual)
-        {
-            minNumOfPeeps = int.Parse(Console.ReadLine());
-        }
-        else
-        {
-            Console.WriteLine(minNumOfPeeps);
-        }
+#if manual
+        int minNumOfPeeps = int.Parse(Console.ReadLine());
+#else
+        int minNumOfPeeps = 2;
+        Console.WriteLine(minNumOfPeeps);
+#endif
 
         Console.Write("Enter minimum length of streak (hours): ");
-        var minStreak = new TimeSpan(2, 0, 0);
-        if (manual)
-        {
-            minStreak = new TimeSpan(int.Parse(Console.ReadLine()), 0, 0);
-        }
-        else
-        {
+
+#if manual
+        var minStreak = new TimeSpan(int.Parse(Console.ReadLine()), 0, 0);
+#else
+            var minStreak = new TimeSpan(2, 0, 0);
             Console.WriteLine(minStreak.TotalHours);
+#endif
+
+        List<string> people = [];
+        foreach (PersonAvailability personAvailability in peopleAvailabilities)
+        {
+            people.Add(personAvailability.Name);
         }
 
+        var shownPeople = new List<string>(people);
+
         List<string> requiredPeople = [];
-        if (manual)
+
+#if manual
+        Console.WriteLine("Enter the number of the people you'd like to require to be there:");
+        for (var i = 0; i < people.Count; i++)
         {
-            
+            var counter = 1;
+
+            foreach (string name in shownPeople)
+            {
+                Console.WriteLine($"[{counter++}] {name}");
+            }
+
+            Console.WriteLine($"[{counter}] Finish");
+            Console.Write(" -> ");
+            int selected = int.Parse(Console.ReadLine());
+
+            if (selected > counter || selected <= 0)
+            {
+                // Invalid
+                continue;
+            }
+
+            if (selected == counter)
+            {
+                // They selected finish
+                break;
+            }
+
+            // They selected a name
+            requiredPeople.Add(shownPeople[selected - 1]);
+            shownPeople.RemoveAt(selected - 1);
         }
-        else
+#else
+        requiredPeople.Add("person1");
+#endif
+
+        foreach (var requiredPerson in requiredPeople)
         {
-            requiredPeople.Add("person1");
+            Console.Write($"{requiredPerson}, ");
+            if (!people.Contains(requiredPerson))
+            {
+                throw new Exception("You're trying to require a person who does not exist");
+            }
         }
+
+        Console.Write('\n');
 
         List<(DateTime start, DateTime end)> validStreaks = ProcessData(
             peopleAvailabilities,
@@ -73,7 +118,7 @@ public abstract class Program
         );
 
         Console.Write('\n');
-        
+
         foreach ((DateTime start, DateTime end) streak in validStreaks)
         {
             string prevPeopleAvailableAtHour = "";
@@ -86,13 +131,13 @@ public abstract class Program
             {
                 Console.WriteLine(streak.end.ToString("g"));
             }
-            
+
             for (DateTime interval = streak.start; interval <= streak.end; interval += delta)
             {
                 Console.Write($"\t| {interval:HH:mm}");
 
                 string peopleAvailableAtHour = PeopleAvailableAtHour(interval, peopleAvailabilities);
-                
+
                 if (peopleAvailableAtHour != prevPeopleAvailableAtHour)
                 {
                     Console.WriteLine($" {peopleAvailableAtHour}");
@@ -101,9 +146,10 @@ public abstract class Program
                 {
                     Console.Write('\n');
                 }
-                    
+
                 prevPeopleAvailableAtHour = peopleAvailableAtHour;
             }
+
             Console.Write('\n');
         }
 
@@ -174,7 +220,7 @@ public abstract class Program
                 peopleAvailabilities.Add(personAvailability);
             }
         }
-        
+
         DateTime now = DateTime.Now;
         if (earliest < now)
         {
@@ -228,7 +274,8 @@ public abstract class Program
                 if (requiredPerson == peopleAvailabilities[numPeople].Name)
                 {
                     bool meetsCriteria = false;
-                    foreach ((DateTime start, DateTime end) interval in peopleAvailabilities[numPeople].Availability)
+                    foreach ((DateTime start, DateTime end) interval in
+                             peopleAvailabilities[numPeople].Availability)
                     {
                         if (currentInterval >= interval.start && currentInterval <= interval.end)
                         {
