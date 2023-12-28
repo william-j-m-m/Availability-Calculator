@@ -24,9 +24,13 @@ public abstract class Program
         Console.Write("Enter number of people you want at any one time: ");
         int minNumOfPeeps = 2;
         // minNumOfPeeps = int.Parse(Console.ReadLine());
+
+        Console.Write("Enter minimum length of streak (hours): ");
+        //var minStreak = new TimeSpan(2, 0, 0);
+        var minStreak = new TimeSpan(int.Parse(Console.ReadLine()), 0, 0);
         
         List<(DateTime start, DateTime end)> validStreaks =
-            ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps);
+            ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps, minStreak);
         Console.Write('\n');
         foreach (var n in validStreaks)
         {
@@ -107,7 +111,8 @@ public abstract class Program
         TimeSpan delta,
         DateTime earliest,
         DateTime latest,
-        int minNumOfPeeps
+        int minNumOfPeeps,
+        TimeSpan minStreak
     )
     {
         List<(DateTime start, DateTime end)> validStreaks = [];
@@ -147,7 +152,11 @@ public abstract class Program
                 // NOT VALID, END STREAK
                 onStreak = false;
                 DateTime streakEnd = currentInterval - delta;
-                validStreaks.Add((streakStart, streakEnd));
+                if ((streakEnd - streakStart) >= minStreak)
+                {
+                    validStreaks.Add((streakStart, streakEnd));
+                }
+                
                 Console.WriteLine(" ==== ENDING STREAK ==== ");
             }
             
