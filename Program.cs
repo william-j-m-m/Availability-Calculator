@@ -22,7 +22,8 @@ public abstract class Program
         Console.Write('\n');
 
         const int minNumOfPeeps = 3;
-        List<(DateTime start, DateTime end)> validStreaks = ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps);
+        List<(DateTime start, DateTime end)> validStreaks =
+            ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps);
         Console.Write('\n');
         foreach (var n in validStreaks)
         {
@@ -51,8 +52,11 @@ public abstract class Program
     }
 
 
-    private static (List<PersonAvailability> availability, DateTime earliest, DateTime latest) ReadDataIn(
-        string folderPath)
+    private static (
+        List<PersonAvailability> availability, DateTime earliest, DateTime latest)
+        ReadDataIn(
+            string folderPath
+        )
     {
         var earliest = DateTime.MaxValue;
         var latest = DateTime.MinValue;
@@ -101,7 +105,7 @@ public abstract class Program
     )
     {
         List<(DateTime start, DateTime end)> validStreaks = [];
-        
+
         var onStreak = false;
         DateTime streakStart = DateTime.MinValue;
         for (DateTime currentInterval = earliest; currentInterval <= latest; currentInterval += delta)
@@ -113,7 +117,6 @@ public abstract class Program
                 {
                     if (currentInterval >= availableInterval.start && currentInterval <= availableInterval.end)
                     {
-                       
                         numPeopleStreak++;
                     }
                 }
@@ -121,15 +124,15 @@ public abstract class Program
 
             if (numPeopleStreak >= minNumOfPeeps)
             {
-                
                 // IS VALID
                 if (!onStreak)
                 {
                     Console.WriteLine(" ==== STARTING STREAK ==== ");
-                    
+
                     onStreak = true;
                     streakStart = currentInterval;
                 }
+
                 Console.WriteLine(currentInterval);
             }
             else if (onStreak)
