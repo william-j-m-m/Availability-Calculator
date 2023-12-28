@@ -16,14 +16,19 @@ public abstract class Program
 
         (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) = ReadDataIn(textFiles);
 
-        Console.WriteLine('\n');
+        Console.Write('\n');
         Console.WriteLine(earliest);
         Console.WriteLine(latest);
-        Console.WriteLine('\n');
+        Console.Write('\n');
 
-        const int minNumOfPeeps = 2;
-        ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps);
-        
+        const int minNumOfPeeps = 3;
+        List<(DateTime start, DateTime end)> validStreaks = ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps);
+        Console.Write('\n');
+        foreach (var n in validStreaks)
+        {
+            Console.WriteLine($"{n.start} -> {n.end.TimeOfDay}");
+        }
+
         Console.WriteLine($"Time to run: {(DateTime.Now - start).TotalMilliseconds} ms");
     }
 
@@ -87,9 +92,18 @@ public abstract class Program
         return (peopleAvailabilities, earliest, latest);
     }
 
-    private static void ProcessData(List<PersonAvailability> peopleAvailabilities, TimeSpan delta, DateTime earliest,
-        DateTime latest, int minNumOfPeeps)
+    private static List<(DateTime start, DateTime end)> ProcessData(
+        List<PersonAvailability> peopleAvailabilities,
+        TimeSpan delta,
+        DateTime earliest,
+        DateTime latest,
+        int minNumOfPeeps
+    )
     {
+        List<(DateTime start, DateTime end)> validStreaks = [];
+        
+        var onStreak = false;
+        DateTime streakStart = DateTime.MinValue;
         for (DateTime currentInterval = earliest; currentInterval <= latest; currentInterval += delta)
         {
             var numPeopleStreak = 0;
@@ -99,6 +113,7 @@ public abstract class Program
                 {
                     if (currentInterval >= availableInterval.start && currentInterval <= availableInterval.end)
                     {
+                       
                         numPeopleStreak++;
                     }
                 }
@@ -106,8 +121,27 @@ public abstract class Program
 
             if (numPeopleStreak >= minNumOfPeeps)
             {
+                
+                // IS VALID
+                if (!onStreak)
+                {
+                    Console.WriteLine(" ==== STARTING STREAK ==== ");
+                    
+                    onStreak = true;
+                    streakStart = currentInterval;
+                }
                 Console.WriteLine(currentInterval);
             }
+            else if (onStreak)
+            {
+                // NOT VALID, END STREAK
+                onStreak = false;
+                DateTime streakEnd = currentInterval - delta;
+                validStreaks.Add((streakStart, streakEnd));
+                Console.WriteLine(" ==== ENDING STREAK ==== ");
+            }
         }
+
+        return validStreaks;
     }
 }
