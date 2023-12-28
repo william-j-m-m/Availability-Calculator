@@ -7,7 +7,6 @@
     string[] splitLine = line.Split(",");
 
     string[] splitDate = splitLine[0].Split("/");
-    
 
     string[] startTime = splitLine[1].Split(':');
     string[] endTime = splitLine[2].Split(':');
@@ -27,13 +26,14 @@ void ReadDataIn(string folderPath)
         using (var reader = new StreamReader(fileName))
         {
             Console.WriteLine($"Reading data for {fileName.Split(@"\")[^1].Split(".").First()}");
+            var listOfDates = new List<(DateTime Start, DateTime End)>();
 
             string line = "";
             while ((line = reader.ReadLine()) != null)
             {
                 //Console.WriteLine(line);
                 (DateTime Start, DateTime End) dates = EncodeDateTime(line);
-                
+                listOfDates.Add(dates);
             }
         }
     }
