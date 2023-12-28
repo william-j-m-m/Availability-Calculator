@@ -76,11 +76,12 @@ public abstract class Program
             // Console.WriteLine($"{streak.start:g} -> {(10 > 20) ? streak.end.ToString("g") : streak.end.ToString("g")}");
             for (DateTime interval = streak.start; interval <= streak.end; interval += delta)
             {
-                Console.WriteLine($"\t| {interval:HH:mm}");
+                Console.WriteLine($"\t| {interval:HH:mm} {PeopleAvailableAtHour(interval, peopleAvailabilities)}");
             }
+            Console.Write("\n");
         }
 
-        Console.WriteLine($"\nTime to run: {(DateTime.Now - start).TotalMilliseconds} ms");
+        Console.WriteLine($"Time to run: {(DateTime.Now - start).TotalMilliseconds} ms");
     }
 
     private static (DateTime start, DateTime end) EncodeDateTime(string line)
@@ -243,5 +244,29 @@ public abstract class Program
         }
 
         return validStreaks;
+    }
+
+    private static string PeopleAvailableAtHour(DateTime current, List<PersonAvailability> peopleAvailabilities)
+    {
+        string peopleHour = "";
+        foreach (PersonAvailability person in peopleAvailabilities)
+        {
+            foreach ((DateTime start, DateTime end) availableInterval in person.Availability)
+            {
+                if (current >= availableInterval.start && current <= availableInterval.end)
+                {
+                    if (peopleHour == "")
+                    {
+                        peopleHour += person.Name;
+                    }
+                    else
+                    {
+                        peopleHour += $", {person.Name}";
+                    }
+                }
+            }
+        }
+
+        return peopleHour;
     }
 }
