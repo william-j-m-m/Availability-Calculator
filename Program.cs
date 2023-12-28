@@ -18,7 +18,7 @@ public abstract class Program
         Console.WriteLine('\n');
         Console.WriteLine(earliest);
         Console.WriteLine(latest);
-        ProcessData(peopleAvailabilities, delta);
+        ProcessData(peopleAvailabilities, delta, earliest, latest);
     }
 
     private static (DateTime start, DateTime end) EncodeDateTime(string line)
@@ -82,8 +82,28 @@ public abstract class Program
         return (peopleAvailabilities, earliest, latest);
     }
 
-    private static void ProcessData(List<PersonAvailability> peopleAvailabilities, TimeSpan delta)
+    private static void ProcessData(List<PersonAvailability> peopleAvailabilities, TimeSpan delta, DateTime earliest, DateTime latest)
     {
-        
+        for (DateTime currentInterval = earliest; currentInterval <= latest; currentInterval += delta)
+        {
+            int numPeopleStreak = 0;
+            foreach (PersonAvailability person in peopleAvailabilities)
+            {
+                foreach ((DateTime start, DateTime end) availableInterval in person.Availability)
+                {
+                    if (currentInterval >= availableInterval.start && currentInterval <= availableInterval.end)
+                    {
+                        numPeopleStreak++;
+                    }
+                }
+            }
+
+            if (numPeopleStreak >= 2)
+            {
+                Console.WriteLine(currentInterval);
+                
+            }
+            
+        }
     }
 }
