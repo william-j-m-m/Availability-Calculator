@@ -37,7 +37,7 @@ public abstract class Program
 #if manual
         int minNumOfPeeps = int.Parse(Console.ReadLine());
 #else
-        int minNumOfPeeps = 2;
+        var minNumOfPeeps = 2;
         Console.WriteLine(minNumOfPeeps);
 #endif
 
@@ -50,6 +50,7 @@ public abstract class Program
             Console.WriteLine(minStreak.TotalHours);
 #endif
 
+
         List<string> people = [];
         foreach (PersonAvailability personAvailability in peopleAvailabilities)
         {
@@ -60,51 +61,54 @@ public abstract class Program
 
         List<string> requiredPeople = [];
 
-#if manual
-        Console.WriteLine("Enter the number of the people you'd like to require to be there:");
-        for (var i = 0; i < people.Count; i++)
+        if (minNumOfPeeps != peopleAvailabilities.Count)
         {
-            var counter = 1;
-
-            foreach (string name in shownPeople)
+#if manual
+            Console.WriteLine("Enter the number of the people you'd like to require to be there:");
+            for (var i = 0; i < people.Count; i++)
             {
-                Console.WriteLine($"[{counter++}] {name}");
+                var counter = 1;
+
+                foreach (string name in shownPeople)
+                {
+                    Console.WriteLine($"[{counter++}] {name}");
+                }
+
+                Console.WriteLine($"[{counter}] Finish");
+                Console.Write(" -> ");
+                int selected = int.Parse(Console.ReadLine());
+
+                if (selected > counter || selected <= 0)
+                {
+                    // Invalid
+                    continue;
+                }
+
+                if (selected == counter)
+                {
+                    // They selected finish
+                    break;
+                }
+
+                // They selected a name
+                requiredPeople.Add(shownPeople[selected - 1]);
+                shownPeople.RemoveAt(selected - 1);
             }
-
-            Console.WriteLine($"[{counter}] Finish");
-            Console.Write(" -> ");
-            int selected = int.Parse(Console.ReadLine());
-
-            if (selected > counter || selected <= 0)
-            {
-                // Invalid
-                continue;
-            }
-
-            if (selected == counter)
-            {
-                // They selected finish
-                break;
-            }
-
-            // They selected a name
-            requiredPeople.Add(shownPeople[selected - 1]);
-            shownPeople.RemoveAt(selected - 1);
-        }
 #else
-        requiredPeople.Add("person1");
+            requiredPeople.Add(people[0]);
 #endif
 
-        foreach (var requiredPerson in requiredPeople)
-        {
-            Console.Write($"{requiredPerson}, ");
-            if (!people.Contains(requiredPerson))
+            foreach (var requiredPerson in requiredPeople)
             {
-                throw new Exception("You're trying to require a person who does not exist");
+                Console.Write($"{requiredPerson}, ");
+                if (!people.Contains(requiredPerson))
+                {
+                    throw new Exception("You're trying to require a person who does not exist");
+                }
             }
-        }
 
-        Console.Write('\n');
+            Console.Write('\n');
+        }
 
         List<(DateTime start, DateTime end)> validStreaks = ProcessData(
             peopleAvailabilities,
@@ -251,6 +255,7 @@ public abstract class Program
                     isAvailable = true;
                 }
             }
+
             if (requiredPeople.Contains(person.Name) && !isAvailable)
             {
                 return false;
