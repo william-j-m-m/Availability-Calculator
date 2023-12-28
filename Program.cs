@@ -4,7 +4,13 @@ void ReadDataIn(string folderPath)
 {
     string[] fileNames = Directory.GetFiles(folderPath);
     foreach (string fileName in fileNames) {
-        Console.WriteLine(fileName);
+        using (StreamReader reader = new StreamReader(fileName))
+        {
+            string line = "";
+            while ((line = reader.ReadLine()) != null) {
+                Console.WriteLine(line);
+            }
+        }
     }
 }
 
