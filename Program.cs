@@ -64,10 +64,19 @@ public abstract class Program
         Console.Write('\n');
         foreach ((DateTime start, DateTime end) streak in validStreaks)
         {
-            Console.WriteLine($"{streak.start} -> {streak.end}");
+            Console.Write($"{streak.start:g} -> ");
+            if (streak.start.Date == streak.end.Date)
+            {
+                Console.WriteLine(streak.end.ToString("t"));
+            }
+            else
+            {
+                Console.WriteLine(streak.end.ToString("g"));
+            }
+            // Console.WriteLine($"{streak.start:g} -> {(10 > 20) ? streak.end.ToString("g") : streak.end.ToString("g")}");
             for (DateTime interval = streak.start; interval <= streak.end; interval += delta)
             {
-                Console.WriteLine($"\t| {interval.ToString(@"HH:mm")}");
+                Console.WriteLine($"\t| {interval:HH:mm}");
             }
         }
 
