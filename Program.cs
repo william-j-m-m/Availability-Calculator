@@ -2,7 +2,8 @@
 
 (DateTime start, DateTime end) EncodeDateTime(string line)
 {
-    
+    string[] splitLine = line.Split(",");
+    Console.WriteLine(splitLine[0]);
 }
 
 void ReadDataIn(string folderPath)
