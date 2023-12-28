@@ -10,6 +10,7 @@ public abstract class Program
 
     public static void Main(string[] args)
     {
+        DateTime start = DateTime.Now;
         const string textFiles = @".\textFiles";
         var delta = new TimeSpan(1, 0, 0);
 
@@ -22,6 +23,8 @@ public abstract class Program
 
         const int minNumOfPeeps = 2;
         ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps);
+        
+        Console.WriteLine($"Time to run: {(DateTime.Now - start).TotalMilliseconds} ms");
     }
 
     private static (DateTime start, DateTime end) EncodeDateTime(string line)
