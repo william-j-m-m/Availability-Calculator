@@ -1,5 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+(DateTime start, DateTime end) EncodeDateTime(string line)
+{
+    
+}
+
 void ReadDataIn(string folderPath)
 {
     string[] fileNames = Directory.GetFiles(folderPath);
@@ -13,6 +18,7 @@ void ReadDataIn(string folderPath)
             while ((line = reader.ReadLine()) != null)
             {
                 Console.WriteLine(line);
+                (DateTime start, DateTime end) = EncodeDateTime(line);
             }
         }
     }
