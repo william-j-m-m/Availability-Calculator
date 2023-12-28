@@ -18,7 +18,8 @@ void ReadDataIn(string folderPath)
             while ((line = reader.ReadLine()) != null)
             {
                 Console.WriteLine(line);
-                (DateTime, DateTime) date = EncodeDateTime(line);
+                (DateTime Start, DateTime End) dates = EncodeDateTime(line);
+                
             }
         }
     }
