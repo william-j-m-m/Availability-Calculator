@@ -62,8 +62,10 @@ public abstract class Program
         );
 
         Console.Write('\n');
+        
         foreach ((DateTime start, DateTime end) streak in validStreaks)
         {
+            string prevPeopleAvailableAtHour = "";
             Console.Write($"{streak.start:g} -> ");
             if (streak.start.Date == streak.end.Date)
             {
@@ -73,12 +75,25 @@ public abstract class Program
             {
                 Console.WriteLine(streak.end.ToString("g"));
             }
-            // Console.WriteLine($"{streak.start:g} -> {(10 > 20) ? streak.end.ToString("g") : streak.end.ToString("g")}");
+            
             for (DateTime interval = streak.start; interval <= streak.end; interval += delta)
             {
-                Console.WriteLine($"\t| {interval:HH:mm} {PeopleAvailableAtHour(interval, peopleAvailabilities)}");
+                Console.Write($"\t| {interval:HH:mm}");
+
+                string peopleAvailableAtHour = PeopleAvailableAtHour(interval, peopleAvailabilities);
+                
+                if (peopleAvailableAtHour != prevPeopleAvailableAtHour)
+                {
+                    Console.WriteLine($" {peopleAvailableAtHour}");
+                }
+                else
+                {
+                    Console.Write('\n');
+                }
+                    
+                prevPeopleAvailableAtHour = peopleAvailableAtHour;
             }
-            Console.Write("\n");
+            Console.Write('\n');
         }
 
         Console.WriteLine($"Time to run: {(DateTime.Now - start).TotalMilliseconds} ms");
@@ -88,10 +103,10 @@ public abstract class Program
     {
         // (DateTime start, DateTime end) output = (DateTime.Now, DateTime.Now);
 
-        string[] splitLine = line.Split(",");
+        string[] splitLine = line.Split(',');
 
-        string[] splitStartDate = splitLine[0].Split("/");
-        string[] splitEndDate = splitLine[2].Split("/");
+        string[] splitStartDate = splitLine[0].Split('/');
+        string[] splitEndDate = splitLine[2].Split('/');
 
         string[] startTime = splitLine[1].Split(':');
         string[] endTime = splitLine[3].Split(':');
