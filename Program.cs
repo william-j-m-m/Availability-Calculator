@@ -68,7 +68,8 @@ public abstract class Program
             latest,
             minNumOfPeeps,
             minStreak,
-            activeHours
+            activeHours,
+            requiredPeople
         );
 
         Console.Write('\n');
@@ -189,8 +190,8 @@ public abstract class Program
         DateTime currentInterval,
         List<PersonAvailability> peopleAvailabilities,
         int minNumOfPeeps,
-        (DateTime start, DateTime end) activeHours
-    )
+        (DateTime start, DateTime end) activeHours,
+        List<string> requiredPeople)
     {
         var numPeopleStreak = 0;
         foreach (PersonAvailability person in peopleAvailabilities)
@@ -220,6 +221,28 @@ public abstract class Program
             return false;
         }
 
+        foreach (string requiredPerson in requiredPeople)
+        {
+            for (int numPeople = 0; numPeople < peopleAvailabilities.Count; numPeople++)
+            {
+                if (requiredPerson == peopleAvailabilities[numPeople].Name)
+                {
+                    bool meetsCriteria = false;
+                    foreach ((DateTime start, DateTime end) interval in peopleAvailabilities[numPeople].Availability)
+                    {
+                        if (currentInterval >= interval.start && currentInterval <= interval.end)
+                        {
+                            meetsCriteria = true;
+                        }
+                    }
+
+                    if (!meetsCriteria)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
 
         return true;
     }
@@ -231,7 +254,8 @@ public abstract class Program
         DateTime latest,
         int minNumOfPeeps,
         TimeSpan minStreak,
-        (DateTime start, DateTime end) activeHours
+        (DateTime start, DateTime end) activeHours,
+        List<string> requiredPeople
     )
     {
         List<(DateTime start, DateTime end)> validStreaks = [];
@@ -240,7 +264,7 @@ public abstract class Program
         var streakStart = DateTime.MinValue;
         for (DateTime currentInterval = earliest; currentInterval <= latest; currentInterval += delta)
         {
-            if (IsValid(currentInterval, peopleAvailabilities, minNumOfPeeps, activeHours))
+            if (IsValid(currentInterval, peopleAvailabilities, minNumOfPeeps, activeHours, requiredPeople))
             {
                 // IS VALID
                 if (!onStreak)
