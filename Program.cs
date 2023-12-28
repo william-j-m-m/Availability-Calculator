@@ -6,16 +6,10 @@ namespace PersonAvailabilityCalculator
 {
     class Program
     {
-        struct PersonAvailability
+        private struct PersonAvailability(string name, List<(DateTime start, DateTime end)> availability)
         {
-            public PersonAvailability(string name, List<(DateTime start, DateTime end)> availability)
-            {
-                Name = name;
-                Availability = availability;
-            }
-
-            public string Name;
-            public List<(DateTime start, DateTime end)> Availability;
+            public string Name = name;
+            public List<(DateTime start, DateTime end)> Availability = availability;
         }
         
         public static void Main(string[] args)
