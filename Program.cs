@@ -19,7 +19,7 @@ public abstract class Program
             new DateTime(new DateOnly(), new TimeOnly(23, 0))
         );
 
-        (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) = ReadDataIn(textFiles);
+        (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) = ReadDataIn(textFiles, delta);
 
         // Console.Write('\n');
         // Console.WriteLine(earliest);
@@ -96,7 +96,8 @@ public abstract class Program
     private static (
         List<PersonAvailability> availability, DateTime earliest, DateTime latest)
         ReadDataIn(
-            string folderPath
+            string folderPath,
+            TimeSpan delta
         )
     {
         var earliest = DateTime.MaxValue;
@@ -132,6 +133,14 @@ public abstract class Program
                 var personAvailability = new PersonAvailability(name, listOfDates);
                 peopleAvailabilities.Add(personAvailability);
             }
+        }
+        
+        DateTime now = DateTime.Now;
+        if (earliest < now)
+        {
+            long ticks = now.Ticks / delta.Ticks;
+
+            earliest = new DateTime(ticks * delta.Ticks, now.Kind);
         }
 
         return (peopleAvailabilities, earliest, latest);
