@@ -11,12 +11,14 @@ public abstract class Program
     public static void Main(string[] args)
     {
         const string textFiles = @".\textFiles";
+        var delta = new TimeSpan(1, 0, 0);
+        
         (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) = ReadDataIn(textFiles);
         // Console.WriteLine(peopleAvailabilities[0].Name);
         Console.WriteLine('\n');
         Console.WriteLine(earliest);
         Console.WriteLine(latest);
-        ProcessData(peopleAvailabilities);
+        ProcessData(peopleAvailabilities, delta);
     }
 
     private static (DateTime start, DateTime end) EncodeDateTime(string line)
@@ -80,7 +82,7 @@ public abstract class Program
         return (peopleAvailabilities, earliest, latest);
     }
 
-    static void ProcessData(List<PersonAvailability> peopleAvailabilities)
+    private static void ProcessData(List<PersonAvailability> peopleAvailabilities, TimeSpan delta)
     {
         
     }
