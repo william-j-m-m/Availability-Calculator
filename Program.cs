@@ -51,6 +51,16 @@ public abstract class Program
             Console.WriteLine(minStreak.TotalHours);
         }
 
+        List<string> requiredPeople = [];
+        if (manual)
+        {
+            
+        }
+        else
+        {
+            requiredPeople.Add("person1");
+        }
+
         List<(DateTime start, DateTime end)> validStreaks = ProcessData(
             peopleAvailabilities,
             delta,
