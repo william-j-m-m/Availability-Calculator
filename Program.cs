@@ -1,11 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-void ReadDataIn(string textFilePath)
+void ReadDataIn(string folderPath)
 {
-    string path = @"E:\Downloads";
-    string[] files = Directory.GetFiles(path);
-    foreach (string file in files) {
-        Console.WriteLine(file);
+    string[] fileNames = Directory.GetFiles(folderPath);
+    foreach (string fileName in fileNames) {
+        Console.WriteLine(fileName);
     }
 }
 
@@ -14,4 +13,6 @@ void ProcessData()
     
 }
 
-ReadDataIn("");
+
+const string textFiles = @".\textFiles";
+ReadDataIn(textFiles);
