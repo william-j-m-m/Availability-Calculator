@@ -5,13 +5,14 @@
     // (DateTime start, DateTime end) output = (DateTime.Now, DateTime.Now);
     
     string[] splitLine = line.Split(",");
-    Console.WriteLine(splitLine[0]);
+
+    string[] splitDate = splitLine[0].Split("/");
 
     string[] startTime = splitLine[1].Split(':');
     string[] endTime = splitLine[2].Split(':');
     
-    DateTime startDateTime = new(2023, 12, 28, int.Parse(startTime[0]), int.Parse(startTime[1]), 0);
-    DateTime endDateTime = new(2023, 12, 28, int.Parse(endTime[0]), int.Parse(endTime[1]), 0);
+    DateTime startDateTime = new(int.Parse(splitDate[2]), int.Parse(splitDate[1]), int.Parse(splitDate[0]), int.Parse(startTime[0]), int.Parse(startTime[1]), 0);
+    DateTime endDateTime = new(int.Parse(splitDate[2]), int.Parse(splitDate[1]), int.Parse(splitDate[0]), int.Parse(endTime[0]), int.Parse(endTime[1]), 0);
 
     return (startDateTime, endDateTime);
 }
