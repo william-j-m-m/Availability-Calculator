@@ -2,8 +2,12 @@
 
 (DateTime start, DateTime end) EncodeDateTime(string line)
 {
+    (DateTime start, DateTime end) output = (DateTime.Now, DateTime.Now);
+    
     string[] splitLine = line.Split(",");
     Console.WriteLine(splitLine[0]);
+
+    return output;
 }
 
 void ReadDataIn(string folderPath)
