@@ -7,7 +7,7 @@ void ReadDataIn(string folderPath)
     {
         using (var reader = new StreamReader(fileName))
         {
-            Console.WriteLine($"Reading data for person {fileName.Split(@"\")[^1]}");
+            Console.WriteLine($"Reading data for {fileName.Split(@"\")[^1].Split(".").First()}");
 
             string line = "";
             while ((line = reader.ReadLine()) != null)
