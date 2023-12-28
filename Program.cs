@@ -7,12 +7,13 @@ public abstract class Program
         public readonly string Name = name;
         public readonly List<(DateTime start, DateTime end)> Availability = availability;
     }
-        
+    
     public static void Main(string[] args)
     {
         const string textFiles = @".\textFiles";
         List<PersonAvailability> peopleAvailabilities = ReadDataIn(textFiles);
-        Console.WriteLine(peopleAvailabilities[0].Name);
+        // Console.WriteLine(peopleAvailabilities[0].Name);
+        ProcessData(peopleAvailabilities);
     }
 
     private static (DateTime start, DateTime end) EncodeDateTime(string line)
@@ -63,7 +64,8 @@ public abstract class Program
         return peopleAvailabilities;
     }
 
-    static void ProcessData()
+    static void ProcessData(List<PersonAvailability> peopleAvailabilities)
     {
+        
     }
 }
