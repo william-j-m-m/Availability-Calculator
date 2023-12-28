@@ -21,10 +21,10 @@ public abstract class Program
 
         (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) = ReadDataIn(textFiles);
 
-        Console.Write('\n');
-        Console.WriteLine(earliest);
-        Console.WriteLine(latest);
-        Console.Write('\n');
+        // Console.Write('\n');
+        // Console.WriteLine(earliest);
+        // Console.WriteLine(latest);
+        // Console.Write('\n');
 
         const bool manual = false;
 
@@ -51,16 +51,23 @@ public abstract class Program
             Console.WriteLine(minStreak.TotalHours);
         }
 
+        List<(DateTime start, DateTime end)> validStreaks = ProcessData(
+            peopleAvailabilities,
+            delta,
+            earliest,
+            latest,
+            minNumOfPeeps,
+            minStreak,
+            activeHours
+        );
 
-        List<(DateTime start, DateTime end)> validStreaks =
-            ProcessData(peopleAvailabilities, delta, earliest, latest, minNumOfPeeps, minStreak);
         Console.Write('\n');
         foreach ((DateTime start, DateTime end) streak in validStreaks)
         {
             Console.WriteLine($"{streak.start} -> {streak.end}");
         }
 
-        Console.WriteLine($"Time to run: {(DateTime.Now - start).TotalMilliseconds} ms");
+        Console.WriteLine($"\nTime to run: {(DateTime.Now - start).TotalMilliseconds} ms");
     }
 
     private static (DateTime start, DateTime end) EncodeDateTime(string line)
@@ -81,7 +88,7 @@ public abstract class Program
             int.Parse(splitEndDate[0]),
             int.Parse(endTime[0]), int.Parse(endTime[1]), 0);
 
-        Console.WriteLine($"{startDateTime} -> {endDateTime}");
+        // Console.WriteLine($"{startDateTime} -> {endDateTime}");
         return (startDateTime, endDateTime);
     }
 
@@ -102,7 +109,7 @@ public abstract class Program
             using (var reader = new StreamReader(fileName))
             {
                 string name = fileName.Split(@"\")[^1].Split(".").First();
-                Console.WriteLine($"Reading data for {name}");
+                // Console.WriteLine($"Reading data for {name}");
                 var listOfDates = new List<(DateTime Start, DateTime End)>();
 
                 string line;
@@ -133,7 +140,8 @@ public abstract class Program
     private static bool IsValid(
         DateTime currentInterval,
         List<PersonAvailability> peopleAvailabilities,
-        int minNumOfPeeps
+        int minNumOfPeeps,
+        (DateTime start, DateTime end) activeHours
     )
     {
         var numPeopleStreak = 0;
@@ -154,6 +162,16 @@ public abstract class Program
             return false;
         }
 
+        if (currentInterval.TimeOfDay < activeHours.start.TimeOfDay)
+        {
+            return false;
+        }
+
+        if (currentInterval.TimeOfDay > activeHours.end.TimeOfDay)
+        {
+            return false;
+        }
+
 
         return true;
     }
@@ -164,7 +182,8 @@ public abstract class Program
         DateTime earliest,
         DateTime latest,
         int minNumOfPeeps,
-        TimeSpan minStreak
+        TimeSpan minStreak,
+        (DateTime start, DateTime end) activeHours
     )
     {
         List<(DateTime start, DateTime end)> validStreaks = [];
@@ -173,18 +192,18 @@ public abstract class Program
         var streakStart = DateTime.MinValue;
         for (DateTime currentInterval = earliest; currentInterval <= latest; currentInterval += delta)
         {
-            if (IsValid(currentInterval, peopleAvailabilities, minNumOfPeeps))
+            if (IsValid(currentInterval, peopleAvailabilities, minNumOfPeeps, activeHours))
             {
                 // IS VALID
                 if (!onStreak)
                 {
-                    Console.WriteLine(" ==== STARTING STREAK ==== ");
+                    // Console.WriteLine(" ==== STARTING STREAK ==== ");
 
                     onStreak = true;
                     streakStart = currentInterval;
                 }
 
-                Console.WriteLine(currentInterval);
+                // Console.WriteLine(currentInterval);
             }
             else
             {
@@ -197,7 +216,7 @@ public abstract class Program
                     validStreaks.Add((streakStart, streakEnd));
                 }
 
-                Console.WriteLine(" ==== ENDING STREAK ==== ");
+                // Console.WriteLine(" ==== ENDING STREAK ==== ");
             }
         }
 
