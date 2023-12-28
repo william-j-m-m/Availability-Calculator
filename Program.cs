@@ -7,12 +7,15 @@ public abstract class Program
         public readonly string Name = name;
         public readonly List<(DateTime start, DateTime end)> Availability = availability;
     }
-    
+
     public static void Main(string[] args)
     {
         const string textFiles = @".\textFiles";
-        List<PersonAvailability> peopleAvailabilities = ReadDataIn(textFiles);
+        (List<PersonAvailability> peopleAvailabilities, DateTime earliest, DateTime latest) = ReadDataIn(textFiles);
         // Console.WriteLine(peopleAvailabilities[0].Name);
+        Console.WriteLine('\n');
+        Console.WriteLine(earliest);
+        Console.WriteLine(latest);
         ProcessData(peopleAvailabilities);
     }
 
@@ -32,14 +35,17 @@ public abstract class Program
         DateTime endDateTime = new(int.Parse(splitDate[2]) + 2000, int.Parse(splitDate[1]), int.Parse(splitDate[0]),
             int.Parse(endTime[0]), int.Parse(endTime[1]), 0);
 
-        Console.WriteLine(startDateTime);
+        Console.WriteLine($"{startDateTime} -> {endDateTime.TimeOfDay}");
         return (startDateTime, endDateTime);
     }
 
 
-    private static List<PersonAvailability> ReadDataIn(string folderPath)
+    private static (List<PersonAvailability> availability, DateTime earliest, DateTime latest) ReadDataIn(string folderPath)
     {
-        List<PersonAvailability> peopleAvailabilities = new List<PersonAvailability>();
+        var earliest = DateTime.MaxValue;
+        var latest = DateTime.MinValue;
+        
+        var peopleAvailabilities = new List<PersonAvailability>();
         string[] fileNames = Directory.GetFiles(folderPath);
         foreach (string fileName in fileNames)
         {
@@ -49,19 +55,29 @@ public abstract class Program
                 Console.WriteLine($"Reading data for {name}");
                 var listOfDates = new List<(DateTime Start, DateTime End)>();
 
-                string line = "";
+                string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    //Console.WriteLine(line);
                     (DateTime Start, DateTime End) dates = EncodeDateTime(line);
                     listOfDates.Add(dates);
+
+                    if (dates.Start < earliest)
+                    {
+                        earliest = dates.Start;
+                    }
+
+                    if (dates.End > latest)
+                    {
+                        latest = dates.End;
+                    }
                 }
 
                 var personAvailability = new PersonAvailability(name, listOfDates);
                 peopleAvailabilities.Add(personAvailability);
             }
         }
-        return peopleAvailabilities;
+
+        return (peopleAvailabilities, earliest, latest);
     }
 
     static void ProcessData(List<PersonAvailability> peopleAvailabilities)
